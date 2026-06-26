@@ -9,6 +9,16 @@ app.use(express.json());
 app.use(cors());  // to connect backend and frontend
 
 
+// Home Route
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "🚀 Image Gallery API is running successfully!"
+    });
+});
+
+
+
 // server static files (uploaded images)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
