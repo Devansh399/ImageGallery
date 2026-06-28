@@ -59,13 +59,13 @@ exports.uploadSingle = async (req, res) => {
     await image.save();
 
     //Delete temporary files
-    // await fs.unlink(tempPath);
+    await fs.unlink(tempPath);
 
-    try {
-      await fs.unlink(image.filepath);
-    } catch (err) {
-      console.log("File not found, deleting DB record only");
-    }
+    // try {
+    //   await fs.unlink(image.filepath);
+    // } catch (err) {
+    //   console.log("File not found, deleting DB record only");
+    // }
 
     res.status(201).json({
       success: true,
@@ -196,7 +196,7 @@ exports.getImage = async (req, res) => {
   try {
     const image = await ImageSchema.findById(req.params.id);
 
-    if (!image) return status(404).json({ error: "Image not found" });
+    if (!image) return res.status(404).json({ error: "Image not found" });
 
     res.status(200).json({
       success: true,
@@ -226,10 +226,19 @@ exports.deleteImage = async (req, res) => {
     if (!image) return res.status(404).json({ error: "Image not found" });
 
     // delete file from the file system (local directory)
+    // await fs.unlink(image.filepath);
+    try {
     await fs.unlink(image.filepath);
+} catch (err) {
+    console.log("File not found, deleting DB record only:", err.message);
+}
+
 
     // delete image from the database
+    // await ImageSchema.findByIdAndDelete(req.params.id);
     await ImageSchema.findByIdAndDelete(req.params.id);
+
+
 
     res.status(200).json({
       success: true,
