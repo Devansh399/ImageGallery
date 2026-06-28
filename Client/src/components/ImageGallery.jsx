@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ImageIcon,
   Maximize2,
@@ -18,7 +18,7 @@ const ImageGallery = ({ refereshTrigger }) => {
   const [error, setError] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -31,11 +31,11 @@ const ImageGallery = ({ refereshTrigger }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchImages();
-  }, [refereshTrigger]);
+  }, [refereshTrigger, fetchImages]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Permanent deletion cannot be undone. Proceed?")) {
@@ -111,7 +111,7 @@ const ImageGallery = ({ refereshTrigger }) => {
               {/* Image container */}
               <div className="relative aspect-square overflow-hidden bg-slate-100">
                 <img
-                  src={`http://localhost:5000${image.url}`}
+                  src={`${import.meta.env.VITE_API_URL.replace("/api/v2", "")}${image.url}`}
                   alt={image.originalName}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
@@ -146,12 +146,12 @@ const ImageGallery = ({ refereshTrigger }) => {
       {/* Model / Lightbox */}
       {/* Conditional Rendering */}
   {selectedImage && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-10">
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 md:p-10">
         {/* overlay */}
 
 <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm" onClick={() => setSelectedImage(null)}></div>
 
-        <div className="relative w-full max-w-5xl bg-white rounded-[2rem] overflow-hidden flex flex-col lg:flex-row max-h-[90vh] shadow-2xl" >
+        <div className="relative w-full max-w-5xl bg-white rounded-4xl overflow-hidden flex flex-col lg:flex-row max-h-[90vh] shadow-2xl" >
           {/* Close Button */}
           <button className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 text-white lg:hidden rounded-full"
           onClick={()=> setSelectedImage(null)} >
@@ -161,7 +161,7 @@ const ImageGallery = ({ refereshTrigger }) => {
           {/* Left Image Side */}
           <div className="flex-1 bg-black flex items-center justify-center overflow-hidden">
             <img
-              src={`http://localhost:5000${selectedImage.url}`}
+             src={`${import.meta.env.VITE_API_URL.replace("/api/v2", "")}${selectedImage.url}`}
               alt=""
               className="max-w-full max-h-full object-contain"
             />

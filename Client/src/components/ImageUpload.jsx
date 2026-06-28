@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { File, Upload, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { UploadMultipleImage, uploadSingleImage } from "../services/app";
-const ImageUpload = ({ onUplaadSuccess }) => {
+const ImageUpload = ({ onUploadSuccess }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -18,7 +18,7 @@ const ImageUpload = ({ onUplaadSuccess }) => {
 
   const executeUpload = async () => {
     if (selectedFiles.length === 0) return;
-    setUploadType(true);
+    setUploading(true);
     setMessage({ type: "", text: "" });
 
     try {
@@ -31,18 +31,17 @@ const ImageUpload = ({ onUplaadSuccess }) => {
       setPreviews([]);
 
       setTimeout(() => {
-        if (onUploadSuccess) onUplaadSuccess();
+        if (onUploadSuccess) onUploadSuccess();
       }, 400);
     } catch (error) {
-      error.response?.data.message ||
-        error.response?.data.message ||
+      const backendMessage = error.response?.data.message ||
         error.response?.data.error ||
         error.message ||
         "Upload Failed";
 
       setMessage({ type: "error", text: backendMessage });
     } finally {
-      setUploadType(false);
+      setUploading(false);
     }
   };
 
@@ -121,7 +120,7 @@ const ImageUpload = ({ onUplaadSuccess }) => {
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        <button className="flex-[2] p-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 transition-all" onClick={executeUpload} disabled={uploading || selectedFiles.length === 0}>
+        <button className="flex-2 p-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 text-white rounded-2xl font-bold text-sm shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 transition-all" onClick={executeUpload} disabled={uploading || selectedFiles.length === 0}>
         
           {/* Condtitonal rendering  */}
           {uploading ? <Loader2 className="w-4 h-4 animate-spin"/>  : <Upload className="w-4 h-4"/>}

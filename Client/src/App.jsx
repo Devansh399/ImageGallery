@@ -15,25 +15,23 @@ function App() {
 
   });
 
-  // calculate total size
-  const updateStorageStats = async ()=>{
-    try{
-        const result = await getAllImage();
-        const totalUsed = result.images.reduce((acc, img)=> acc + (img.size || 0),
-      0,
-    );
-
-    setStorageState((prev)=>({...prev, used: totalUsed}))
-
-    }catch(err){
-           console.log("Failed to update storage", err);
-    }
-  }
-
-
   // update image whenever a upload happes
 
   useEffect(()=>{
+    const updateStorageStats = async ()=>{
+      try{
+          const result = await getAllImage();
+          const totalUsed = result.images.reduce((acc, img)=> acc + (img.size || 0),
+        0,
+      );
+
+      setStorageState((prev)=>({...prev, used: totalUsed}))
+
+      }catch(err){
+             console.log("Failed to update storage", err);
+      }
+    }
+    
     updateStorageStats();
   }, [refereshGallery]);
 
@@ -63,7 +61,7 @@ function App() {
   return (
     <>
       <div className="min-h-screen bg-[#f8fafc] text-slate-900">
-        <div className="max-w-[1600px] mx-auto p-4 lg:p-8">
+        <div className="max-w-400 mx-auto p-4 lg:p-8">
           <header className="mb-8 flex justify-between items-end">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
@@ -90,7 +88,7 @@ function App() {
                       <h2 className="font-bold text-slate-800">Quick Upload</h2>
                     </div>
 
-                    <ImageUpload  onUplaadSuccess={handleUploadSuccess}/>
+                    <ImageUpload  onUploadSuccess={handleUploadSuccess}/>
                   </div>
                 </div>
 
@@ -121,7 +119,7 @@ function App() {
             </div>
 
             <div className="lg:col-span-3">
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 min-h-[600px]">
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 min-h-150">
                 <div className="p-8">
                   <div className="flex items-center gap-3 mb-8">
                     <FolderOpen className="w-6 h-6 text-indigo-500" />
